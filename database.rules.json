@@ -1,0 +1,36 @@
+{
+  "rules": {
+    ".read": "auth !== null",
+    ".write": "auth !== null",
+    "users": {
+      "$user_id": {
+        ".write": "auth.uid === $user_id",
+        ".read": "auth.uid === $user_id"
+      }
+    },
+    "matching": {
+      "$matching_id": {
+        ".write": "!root.child('mathching/' + $matching_id + '/user2').exists() || auth.uid === root.child('mathching/' + $matching_id + '/user1').val() || auth.uid === root.child('mathching/' + $matching_id + '/user2').val()",
+        "user1": {
+          ".write": false
+        },
+        "user2": {
+          ".write": false
+        },
+        "connected": {
+          ".write": "!root.child('mathching/' + $matching_id + '/user2').exists() || root.child('mathching/' + $matching_id + '/user2').val() === auth.uid",
+          ".validate": "newData.isBoolean()"
+        }
+      }
+    },
+    "chat": {
+      "$chat_id": {
+        ".read": "$chat_id === root.child('users/'+ auth.uid + 'mch_id').val()",
+        ".write": "$chat_id === root.child('users/'+ auth.uid + 'mch_id').val()",
+        "$message": {
+          ".write": false
+        }
+      }
+    }
+  }
+}
